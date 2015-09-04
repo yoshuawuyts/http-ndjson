@@ -22,6 +22,10 @@ http.createServer((req, res) => {
   res.end()
 }).listen()
 ```
+```js
+{ name: '->', url: '/', type: 'request' }
+{ name: '<-', url: '/', statusCode: 200, elapsed: '5ms', type: 'request' }
+```
 
 ## API
 ### writeStream = httpNdjson(req, res)
