@@ -27,7 +27,11 @@
     "garnish"
   ],
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "is-incoming-message": "^1.0.0",
+    "is-server-response": "^1.0.0",
+    "ndjson": "^1.4.1"
+  },
   "devDependencies": {
     "dependency-check": "^2.5.0",
     "istanbul": "^0.3.19",

@@ -1,5 +1,5 @@
-const isReq = require('is-icoming-message')
-const isRes = require('is-server-reponse')
+const isReq = require('is-incoming-message')
+const isRes = require('is-server-response')
 const assert = require('assert')
 const ndjson = require('ndjson')
 
