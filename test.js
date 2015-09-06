@@ -24,21 +24,22 @@ test('should assert input types', function (t) {
     const log = httpNdjson(req, res)
     log.on('data', function (str) {
       const data = JSON.parse(str)
+      console.log(data)
       if (!n++) {
         t.same(data, {
-          name: '->',
-          url: '/',
-          type: 'request'
+          name: 'http',
+          message: '<-- GET',
+          url: '/'
         })
         res.end()
         server.close()
       } else {
         t.equal(typeof data, 'object')
-        t.equal(data.name, '<-')
+        t.equal(data.name, 'http')
         t.equal(data.url, '/')
         t.equal(data.statusCode, 200)
+        t.equal(data.message, '--> GET')
         t.ok(/ms$/.test(data.elapsed), 'time elapsed')
-        t.equal(data.type, 'request')
         res.end()
         server.close()
       }

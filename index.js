@@ -15,19 +15,19 @@ function httpNdjson (req, res) {
   const start = Date.now()
 
   serialize.write({
-    name: '->',
-    url: req.url,
-    type: 'request'
+    name: 'http',
+    message: '<-- ' + req.method,
+    url: req.url
   })
 
   res.on('finish', function () {
     const elapsed = Date.now() - start
     serialize.write({
-      name: '<-',
+      name: 'http',
+      message: '--> ' + req.method,
       url: req.url,
       statusCode: res.statusCode,
-      elapsed: elapsed + 'ms',
-      type: 'request'
+      elapsed: elapsed + 'ms'
     })
   })
 
