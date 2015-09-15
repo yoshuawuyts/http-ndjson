@@ -22,13 +22,17 @@ function httpNdjson (req, res) {
 
   res.on('finish', function () {
     const elapsed = Date.now() - start
-    serialize.write({
+    serialize.end({
       name: 'http',
       message: '--> ' + req.method,
       url: req.url,
       statusCode: res.statusCode,
       elapsed: elapsed + 'ms'
     })
+  })
+
+  res.on('error', function () {
+    serialize.end()
   })
 
   return serialize
