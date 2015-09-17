@@ -24,7 +24,6 @@ test('should assert input types', function (t) {
     const log = httpNdjson(req, res)
     log.on('data', function (str) {
       const data = JSON.parse(str)
-      console.log(data)
       if (!n++) {
         t.same(data, {
           name: 'http',
