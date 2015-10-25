@@ -1,5 +1,6 @@
 const isReq = require('is-incoming-message')
 const isRes = require('is-server-response')
+const eos = require('end-of-stream')
 const assert = require('assert')
 const ndjson = require('ndjson')
 
@@ -20,7 +21,9 @@ function httpNdjson (req, res) {
     url: req.url
   })
 
-  res.on('finish', function () {
+  eos(res, function (err) {
+    if (err) serialize.write({ name: 'error', message: err })
+
     const elapsed = Date.now() - start
     serialize.end({
       name: 'http',
@@ -29,10 +32,6 @@ function httpNdjson (req, res) {
       statusCode: res.statusCode,
       elapsed: elapsed + 'ms'
     })
-  })
-
-  res.on('error', function () {
-    serialize.end()
   })
 
   return serialize

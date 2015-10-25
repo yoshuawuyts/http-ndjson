@@ -28,6 +28,7 @@
   ],
   "license": "MIT",
   "dependencies": {
+    "end-of-stream": "^1.1.0",
     "is-incoming-message": "^1.0.0",
     "is-server-response": "^1.0.0",
     "ndjson": "^1.4.1"
