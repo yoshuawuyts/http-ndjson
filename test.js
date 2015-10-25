@@ -27,18 +27,19 @@ test('should assert input types', function (t) {
       if (!n++) {
         t.same(data, {
           name: 'http',
-          message: '<-- GET',
+          message: 'request',
+          method: 'GET',
           url: '/'
         })
         res.end()
         server.close()
       } else {
-        t.equal(typeof data, 'object')
-        t.equal(data.name, 'http')
-        t.equal(data.url, '/')
-        t.equal(data.statusCode, 200)
-        t.equal(data.message, '--> GET')
-        t.ok(/ms$/.test(data.elapsed), 'time elapsed')
+        t.equal(typeof data, 'object', 'typeof msg')
+        t.equal(data.name, 'http', 'name')
+        t.equal(data.url, '/', 'url')
+        t.equal(data.statusCode, 200, 'statusCode')
+        t.equal(data.message, 'response', 'response')
+        t.ok(/ms$/.test(data.elapsed), 'time elapsed', 'time elapse')
         res.end()
         server.close()
       }

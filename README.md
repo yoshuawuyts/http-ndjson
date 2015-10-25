@@ -23,8 +23,8 @@ http.createServer((req, res) => {
 }).listen()
 ```
 ```js
-{ name: 'http', message: '<-- GET', url: '/' }
-{ name: 'http', message: '--> GET', url: '/', statusCode: 200, elapsed: '5ms' }
+{ name: 'http', method: 'GET', message: 'request', url: '/' }
+{ name: 'http', method: 'GET', message: 'response', url: '/', statusCode: 200, elapsed: '5ms' }
 ```
 
 ## API

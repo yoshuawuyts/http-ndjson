@@ -17,7 +17,8 @@ function httpNdjson (req, res) {
 
   serialize.write({
     name: 'http',
-    message: '<-- ' + req.method,
+    message: 'request',
+    method: req.method,
     url: req.url
   })
 
@@ -27,7 +28,8 @@ function httpNdjson (req, res) {
     const elapsed = Date.now() - start
     serialize.end({
       name: 'http',
-      message: '--> ' + req.method,
+      message: 'response',
+      method: req.method,
       url: req.url,
       statusCode: res.statusCode,
       elapsed: elapsed + 'ms'
