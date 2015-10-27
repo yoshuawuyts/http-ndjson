@@ -60,6 +60,26 @@ http.createServer((req, res) => {
 }).listen()
 ```
 
+## Response size
+`http-ndjson` can set a `responseSize` property on the response. It's
+recommended to use the [size-stream](https://www.npmjs.com/package/size-stream)
+package.
+```js
+const httpNdjson = require('http-ndjson')
+const sizeStream = require('size-stream')
+const http = require('http')
+
+http.createServer((req, res) => {
+  const httpLogger = httpNdjson(req, res)
+  httpLogger.pipe(process.stdout)
+
+  const size = sizeStream()
+  size.once('size', size => httpLogger.setSize(size))
+
+  req.pipe(size).pipe(res)
+}).listen()
+```
+
 ## Log custom properties
 `http-ndjson` logs a sensible set of standard properties, but sometimes there's
 a need to dive in and log more. An optional third argument can be added with
