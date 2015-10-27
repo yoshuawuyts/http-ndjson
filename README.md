@@ -42,6 +42,15 @@ http.createServer((req, res) => {
 }).listen()
 ```
 
+## Forward headers
+Determining the origin of a request can be hard when using reverse-proxies.
+It's not too uncommon for users to mask their IP by providing an
+`x-forwarded-for` header. `http-ndjson` makes no assumptions about forwarding
+headers and logs all properties instead. The following headers are logged:
+- __x-forwarded-for:__ standardized reverse proxy header ([rfc7239][7239])
+- __x-real-ip:__ non-standard reverse proxy header
+- __http-client-ip:__ non-standard reverse proxy header
+
 ## API
 ### readStream = httpNdjson(req, res, opts?)
 Create an http logger. Returns a write stream. Opts can contain the following
@@ -70,3 +79,4 @@ Set the content length in bytes.
 [downloads-url]: https://npmjs.org/package/http-ndjson
 [standard-image]: https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square
 [standard-url]: https://github.com/feross/standard
+[7239]: https://tools.ietf.org/html/rfc7239
