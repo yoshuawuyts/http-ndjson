@@ -24,11 +24,22 @@ function httpNdjson (req, res, opts) {
     size = nwSize
   }
 
+  const headers = req.headers
   const request = {
     name: 'http',
     message: 'request',
     method: req.method,
+    remoteAddress: req.connection.remoteAddress,
     url: req.url
+  }
+  if (headers['x-forwarded-for']) {
+    request.xForwardedFor = headers['x-forwarded-for']
+  }
+  if (headers['x-real-ip']) {
+    request.xRealIp = headers['x-real-ip']
+  }
+  if (headers['http-client-ip']) {
+    request.httpClientIp = headers['http-client-ip']
   }
   if (opts.req) extend(request, opts.req)
   serialize.write(request)
