@@ -31,6 +31,9 @@ http.createServer((req, res) => {
 ### writeStream = httpNdjson(req, res)
 Create an http logger. Returns a write stream.
 
+### writestream.setContentLength(size)
+Set the content length in bytes.
+
 ## See Also
 - [bole](https://github.com/rvagg/bole)
 - [garnish](https://github.com/mattdesl/garnish)

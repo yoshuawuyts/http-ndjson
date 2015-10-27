@@ -14,6 +14,11 @@ function httpNdjson (req, res) {
 
   const serialize = ndjson.serialize()
   const start = Date.now()
+  var size = null
+
+  serialize.setContentLength = function (nwSize) {
+    size = nwSize
+  }
 
   serialize.write({
     name: 'http',
@@ -25,15 +30,16 @@ function httpNdjson (req, res) {
   eos(res, function (err) {
     if (err) serialize.write({ name: 'error', message: err })
 
-    const elapsed = Date.now() - start
-    serialize.end({
+    const out = {
       name: 'http',
       message: 'response',
       method: req.method,
       url: req.url,
       statusCode: res.statusCode,
-      elapsed: elapsed + 'ms'
-    })
+      elapsed: Date.now() - start
+    }
+    if (size !== null) out.contentLength = size
+    serialize.end(out)
   })
 
   return serialize
