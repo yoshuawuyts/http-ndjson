@@ -27,11 +27,29 @@ http.createServer((req, res) => {
 { name: 'http', method: 'GET', message: 'response', url: '/', statusCode: 200, elapsed: '5ms' }
 ```
 
-## API
-### writeStream = httpNdjson(req, res)
-Create an http logger. Returns a write stream.
+## Log custom properties
+`http-ndjson` logs a sensible set of standard properties, but sometimes there's
+a need to dive in and log more. An optional third argument can be added with
+custom fields that will be logged on either `request` or `response`.
+```js
+const httpNdjson = require('http-ndjson')
+const http = require('http')
 
-### writestream.setContentLength(size)
+http.createServer((req, res) => {
+  const opts = { req: { requestId: req.headers['requestId'] } }
+  httpNdjson(req, res, opts)
+  res.end()
+}).listen()
+```
+
+## API
+### readStream = httpNdjson(req, res, opts?)
+Create an http logger. Returns a write stream. Opts can contain the following
+values:
+- __req:__ an object with values that will be logged on `request`
+- __res:__ an object with values that will be logged on `response`
+
+### readStream.setContentLength(size)
 Set the content length in bytes.
 
 ## See Also

@@ -1,5 +1,6 @@
 const isReq = require('is-incoming-message')
 const isRes = require('is-server-response')
+const extend = require('xtend/mutable')
 const eos = require('end-of-stream')
 const assert = require('assert')
 const ndjson = require('ndjson')
@@ -7,10 +8,13 @@ const ndjson = require('ndjson')
 module.exports = httpNdjson
 
 // Log http requests as ndjson
-// (obj, obj) -> null
-function httpNdjson (req, res) {
+// (obj, obj, obj) -> null
+function httpNdjson (req, res, opts) {
+  opts = opts || {}
+
   assert.ok(isReq(req), 'is req')
   assert.ok(isRes(res), 'is res')
+  assert.equal(typeof opts, 'object', 'is object')
 
   const serialize = ndjson.serialize()
   const start = Date.now()
@@ -20,17 +24,19 @@ function httpNdjson (req, res) {
     size = nwSize
   }
 
-  serialize.write({
+  const request = {
     name: 'http',
     message: 'request',
     method: req.method,
     url: req.url
-  })
+  }
+  if (opts.req) extend(request, opts.req)
+  serialize.write(request)
 
   eos(res, function (err) {
     if (err) serialize.write({ name: 'error', message: err })
 
-    const out = {
+    const response = {
       name: 'http',
       message: 'response',
       method: req.method,
@@ -38,8 +44,9 @@ function httpNdjson (req, res) {
       statusCode: res.statusCode,
       elapsed: Date.now() - start
     }
-    if (size !== null) out.contentLength = size
-    serialize.end(out)
+    if (size !== null) response.contentLength = size
+    if (opts.res) extend(response, opts.res)
+    serialize.end(response)
   })
 
   return serialize

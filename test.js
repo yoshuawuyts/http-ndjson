@@ -67,3 +67,25 @@ test('should set content length', function (t) {
 
   http.get('http://localhost:' + getPort(server))
 })
+
+test('should allow options', function (t) {
+  t.plan(3)
+  var n = 0
+  const server = http.createServer(function (req, res) {
+    const opts = { req: { foo: 'bar' }, res: { bin: 'baz' } }
+    const log = httpNdjson(req, res, opts)
+    log.on('data', function (str) {
+      const data = JSON.parse(str)
+      if (!n++) {
+        t.equal(data.foo, 'bar', 'custom prop')
+        res.end()
+        server.close()
+      } else {
+        t.equal(typeof data, 'object', 'typeof msg')
+        t.equal(data.bin, 'baz', 'custom prop')
+      }
+    })
+  }).listen()
+
+  http.get('http://localhost:' + getPort(server))
+})
