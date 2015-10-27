@@ -27,6 +27,39 @@ http.createServer((req, res) => {
 { name: 'http', method: 'GET', message: 'response', url: '/', statusCode: 200, elapsed: '5ms' }
 ```
 
+## Custom loggers
+Sometimes `process.stdout` is not quite what you're looking for. Because
+`http-ndjson` is a stream it can easily plug into any streaming logger:
+
+### bole
+```js
+const boleStream = require('bole-stream')
+const httpNdjson = require('http-ndjson')
+const bole = require('bole')
+const http = require('http')
+
+bole.output({ level: 'info', stream: process.stdout })
+
+http.createServer((req, res) => {
+  httpNdjson(req, res).pipe(boleStream({ level: 'info' }))
+  res.end()
+}).listen()
+```
+
+### bunyan
+```js
+const bunyanStream = require('bunyan-stream')
+const httpNdjson = require('http-ndjson')
+const bunyan = require('bunyan')
+
+const logger = bunyan.createLogger({ name: 'myApp' })
+
+http.createServer((req, res) => {
+  httpNdjson(req, res).pipe(bunyanStream({ level: 'info' }, logger))
+  res.end()
+}).listen()
+```
+
 ## Log custom properties
 `http-ndjson` logs a sensible set of standard properties, but sometimes there's
 a need to dive in and log more. An optional third argument can be added with
