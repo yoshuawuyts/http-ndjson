@@ -5,7 +5,8 @@
 [![Downloads][downloads-image]][downloads-url]
 [![js-standard-style][standard-image]][standard-url]
 
-Log http requests as ndjson.
+Log http requests as ndjson. Works pretty well with `bole`, so you should
+probably use it with that. That is my recommendation.
 
 ## Installation
 ```sh
@@ -17,67 +18,16 @@ $ npm install http-ndjson
 const httpNdjson = require('http-ndjson')
 const http = require('http')
 
-http.createServer((req, res) => {
-  httpNdjson(req, res).pipe(process.stdout)
-  res.end()
+http.createServer(function (req, res) {
+  const setSize = httpNdjson(req, res, console.log)
+  const myCoolResponse = 'chickens'
+  setSize(myCoolResponse.length)
+  res.end(myCoolResponse)
 }).listen()
 ```
 ```js
 { name: 'http', method: 'GET', message: 'request', url: '/' }
 { name: 'http', method: 'GET', message: 'response', url: '/', statusCode: 200, elapsed: '5ms' }
-```
-
-## Custom loggers
-Sometimes `process.stdout` is not quite what you're looking for. Because
-`http-ndjson` is a stream it can easily plug into any streaming logger:
-
-### bole
-```js
-const boleStream = require('bole-stream')
-const httpNdjson = require('http-ndjson')
-const bole = require('bole')
-const http = require('http')
-
-bole.output({ level: 'info', stream: process.stdout })
-
-http.createServer((req, res) => {
-  httpNdjson(req, res).pipe(boleStream({ level: 'info' }))
-  res.end()
-}).listen()
-```
-
-### bunyan
-```js
-const bunyanStream = require('bunyan-stream')
-const httpNdjson = require('http-ndjson')
-const bunyan = require('bunyan')
-
-const logger = bunyan.createLogger({ name: 'myApp' })
-
-http.createServer((req, res) => {
-  httpNdjson(req, res).pipe(bunyanStream({ level: 'info' }, logger))
-  res.end()
-}).listen()
-```
-
-## Response size
-`http-ndjson` can set a `responseSize` property on the response. It's
-recommended to use the [size-stream](https://www.npmjs.com/package/size-stream)
-package.
-```js
-const httpNdjson = require('http-ndjson')
-const sizeStream = require('size-stream')
-const http = require('http')
-
-http.createServer((req, res) => {
-  const httpLogger = httpNdjson(req, res)
-  httpLogger.pipe(process.stdout)
-
-  const size = sizeStream()
-  size.once('size', size => httpLogger.setSize(size))
-
-  req.pipe(size).pipe(res)
-}).listen()
 ```
 
 ## Log custom properties
@@ -88,9 +38,9 @@ custom fields that will be logged on either `request` or `response`.
 const httpNdjson = require('http-ndjson')
 const http = require('http')
 
-http.createServer((req, res) => {
+http.createServer(function (req, res) {
   const opts = { req: { requestId: req.headers['requestId'] } }
-  httpNdjson(req, res, opts)
+  httpNdjson(req, res, opts, console.log)
   res.end()
 }).listen()
 ```
@@ -105,14 +55,13 @@ headers and logs all properties instead. The following headers are logged:
 - __http-client-ip:__ non-standard reverse proxy header
 
 ## API
-### readStream = httpNdjson(req, res, opts?)
+### readStream = httpNdjson(req, res, opts?, cb)
 Create an http logger. Returns a write stream. Opts can contain the following
 values:
 - __req:__ an object with values that will be logged on `request`
 - __res:__ an object with values that will be logged on `response`
-
-### readStream.setContentLength(size)
-Set the content length in bytes.
+- __opts:__ set options
+- __cb:__ handle the returned message
 
 ## See Also
 - [bole](https://github.com/rvagg/bole)
