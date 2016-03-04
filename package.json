@@ -1,6 +1,6 @@
 {
   "name": "http-ndjson",
-  "version": "2.3.3",
+  "version": "3.0.0",
   "description": "Log http requests as ndjson",
   "main": "index.js",
   "scripts": {
