@@ -12,6 +12,7 @@ function httpNdjson (req, res, opts, cb) {
   }
   opts = opts || {}
 
+  const key = opts.key || 'message'
   const start = Date.now()
   var size = null
 
@@ -19,40 +20,34 @@ function httpNdjson (req, res, opts, cb) {
     size = nwSize
   }
 
-  const headers = req.headers
   const request = {
     name: 'http',
-    message: 'request',
     method: req.method,
+    headers: req.headers,
     remoteAddress: req.connection.remoteAddress,
     url: req.url
   }
-  if (headers['x-forwarded-for']) {
-    request.xForwardedFor = headers['x-forwarded-for']
-  }
-  if (headers['x-real-ip']) {
-    request.xRealIp = headers['x-real-ip']
-  }
-  if (headers['http-client-ip']) {
-    request.httpClientIp = headers['http-client-ip']
-  }
-  if (headers['true-client-ip']) {
-    request.trueClientIp = headers['true-client-ip']
-  }
+  request[key] = 'request'
+
   if (opts.req) extend(request, opts.req)
   cb(request)
 
   eos(res, function (err) {
-    if (err) cb({ name: 'error', message: err })
+    if (err) {
+      const arg = { name: 'error' }
+      ;(opts.bunyan) ? arg.msg = err : arg.message = err
+      cb(arg)
+    }
 
     const response = {
       name: 'http',
-      message: 'response',
       method: req.method,
       url: req.url,
       statusCode: res.statusCode,
       elapsed: Date.now() - start
     }
+    response[key] = 'response'
+
     if (size !== null) response.contentLength = size
     if (opts.res) extend(response, opts.res)
     cb(response)

@@ -33,8 +33,11 @@
   },
   "devDependencies": {
     "dependency-check": "^2.5.0",
+    "fastbench": "^1.0.1",
+    "from2-string": "^1.1.0",
     "get-server-port": "^1.0.0",
     "istanbul": "^0.3.19",
+    "size-stream": "^1.0.1",
     "standard": "^5.1.1",
     "tape": "^4.2.0"
   },

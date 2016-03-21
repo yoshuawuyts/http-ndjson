@@ -49,10 +49,12 @@ http.createServer(function (req, res) {
 Determining the origin of a request can be hard when using reverse-proxies.
 It's not too uncommon for users to mask their IP by providing an
 `x-forwarded-for` header. `http-ndjson` makes no assumptions about forwarding
-headers and logs all properties instead. The following headers are logged:
+headers and logs all properties instead. This package logs all headers, but
+these are probably the ones you want to be aware of:
 - __x-forwarded-for:__ standardized reverse proxy header ([rfc7239][7239])
 - __x-real-ip:__ non-standard reverse proxy header
 - __http-client-ip:__ non-standard reverse proxy header
+- __true-client-ip:__ non-standard revers proxy header, used by `Akamai`
 
 ## API
 ### readStream = httpNdjson(req, res, opts?, cb)
