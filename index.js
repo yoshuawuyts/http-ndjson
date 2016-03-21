@@ -36,6 +36,9 @@ function httpNdjson (req, res, opts, cb) {
   if (headers['http-client-ip']) {
     request.httpClientIp = headers['http-client-ip']
   }
+  if (headers['true-client-ip']) {
+    request.trueClientIp = headers['true-client-ip']
+  }
   if (opts.req) extend(request, opts.req)
   cb(request)
 
