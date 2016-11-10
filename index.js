@@ -36,7 +36,7 @@ function httpNdjson (req, res, opts, cb) {
   if (headers['http-client-ip']) {
     request.httpClientIp = headers['http-client-ip']
   }
-  if (opts.req) extend(request, opts.req)
+  if (opts.req) extend(request, value(opts.req))
   cb(request)
 
   eos(res, function (err) {
@@ -51,9 +51,13 @@ function httpNdjson (req, res, opts, cb) {
       elapsed: Date.now() - start
     }
     if (size !== null) response.contentLength = size
-    if (opts.res) extend(response, opts.res)
+    if (opts.res) extend(response, value(opts.res))
     cb(response)
   })
 
   return setContentLength
+}
+
+function value (data) {
+  return typeof data === 'function' ? data() : data
 }
