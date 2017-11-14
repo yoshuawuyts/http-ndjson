@@ -45,6 +45,8 @@ http.createServer(function (req, res) {
 }).listen()
 ```
 
+If `opts.req` or `opts.res` is a function, it will be called and its return value will be used to set custom fields.
+
 ## Forward headers
 Determining the origin of a request can be hard when using reverse-proxies.
 It's not too uncommon for users to mask their IP by providing an
